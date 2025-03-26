@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(c *gin.Context) {
@@ -28,16 +29,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// เปรียบเทียบรหัสผ่านตรงๆ (ไม่แฮช)
-	if strings.TrimSpace(customer.Password) != strings.TrimSpace(input.Password) {
+	// เปรียบเทียบรหัสผ่านโดยใช้ bcrypt
+	if err := bcrypt.CompareHashAndPassword([]byte(customer.Password), []byte(input.Password)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid password"})
 		return
 	}
-
-	// if err := bcrypt.CompareHashAndPassword([]byte(customer.Password), []byte(input.Password)); err != nil {
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid password"})
-	// 	return
-	// }
 
 	// หากเข้าสู่ระบบสำเร็จ
 	c.JSON(http.StatusOK, gin.H{

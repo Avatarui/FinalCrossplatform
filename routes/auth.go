@@ -9,5 +9,7 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.POST("/auth/login", controllers.Login)
+	r.POST("/auth/changepassword", controllers.ChangePassword)
+
 	return r
 }
